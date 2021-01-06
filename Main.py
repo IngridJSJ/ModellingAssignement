@@ -68,14 +68,12 @@ AllConventional = generation.Nuclear + generation.BrownCoal + generation.HardCoa
 #TotalGeneration = AllREGeneration + AllConventional + generation.HydroPumpedStorage
 TotalGeneration = generation.sum(axis=1)
 # Electrcicity prices Euro*MWh * MWh = EUR 
-ElectrcityMarginalCosts = generation.Nuclear*Capacity.Nuclear.Price + generation.Gas*Capacity.Gas.Price + generation.BrownCoal*Capacity.BrownCoal.Price + generation.HardCoal*Capacity.HardCoal.Price + generation.OtherConventional*Capacity.OtherConventional.Price
-print(Capacity)
-print(ElectrcityMarginalCosts.head())
+ElectrcityMarginalCosts = generation.Nuclear*Capacity.Nuclear.PricewithCO2 + generation.Gas*Capacity.Gas.PricewithCO2 + generation.BrownCoal*Capacity.BrownCoal.PricewithCO2 + generation.HardCoal*Capacity.HardCoal.PricewithCO2 + generation.OtherConventional*Capacity.OtherConventional.PricewithCO2
 # ElectricityPrices 
 ElectrcityPrices = ElectrcityMarginalCosts/TotalGeneration
-plt.plot(ElectrcityPrices)
-plt.ylabel('Eur/MWh') 
-plt.show()
+# plt.plot(ElectrcityPrices)
+# plt.ylabel('Eur/MWh') 
+# plt.show()
 
 #CO2 emission factor ('ton CO2/MWh') 
 # CO2emissionfactor = Emissions2016/TotalGeneration
@@ -83,28 +81,28 @@ plt.show()
 # plt.ylabel('ton CO2/MWh') 
 # plt.show()
 
-# # residual load
-# residual_load = hourly_consumption - AllREGeneration 
-# #graphs
-# labels = [ "Biomass", "Hydropower", "Wind offshore", "Wind onshore", "Photovoltaics" , "OtherRE" ]
-# pal = [ "#009933", "#66ccff",  "#000099", "#0000ff", "#ffcc00", "#9900ff" ]
+# residual load
+residual_load = hourly_consumption - AllREGeneration 
+#graphs
+labels = [ "Biomass", "Hydropower", "Wind offshore", "Wind onshore", "Photovoltaics" , "OtherRE" ]
+pal = [ "#009933", "#66ccff",  "#000099", "#0000ff", "#ffcc00", "#9900ff" ]
 
-# fig, (ax1, ax2) = plt.subplots(2, sharex=True)
+fig, (ax1, ax2) = plt.subplots(2, sharex=True)
 
-# ax1.plot( generation.index.values, hourly_consumption  , color="pink", label="consumption")
-# ax1.stackplot(generation.index.values , generation.Biomass , generation.Hydropower, generation.WindOffshore, generation.WindOnshore, generation.Photovoltaics, generation.OtherRE ,   
-# labels=labels, colors =pal)
-# ax1.legend( bbox_to_anchor=(1.05, 1))
+ax1.plot( generation.index.values, hourly_consumption  , color="pink", label="consumption")
+ax1.stackplot(generation.index.values , generation.Biomass , generation.Hydropower, generation.WindOffshore, generation.WindOnshore, generation.Photovoltaics, generation.OtherRE ,   
+labels=labels, colors =pal)
+ax1.legend( bbox_to_anchor=(1.05, 1))
 
-# ax1.set_title('Renewable energy generation')
-# ax1.set_ylabel('Mwh') 
+ax1.set_title('Renewable energy generation')
+ax1.set_ylabel('Mwh') 
 
-# ax2.plot(generation.index.values, residual_load, label="Residual Load")
-# ax2.set_title('Residual Load')
-# ax2.legend( bbox_to_anchor=(1.05, 1))
-# ax2.set_xlabel('Month')  
-# ax2.set_ylabel('Mwh') 
-#plt.show()
+ax2.plot(generation.index.values, residual_load, label="Residual Load")
+ax2.set_title('Residual Load')
+ax2.legend( bbox_to_anchor=(1.05, 1))
+ax2.set_xlabel('Month')  
+ax2.set_ylabel('Mwh') 
+plt.show()
 
 #newtime = load[['Date','Time of day']].apply(pd.to_datetime,  )
 #mydatetime = datetime.combine(load['Date'], load['Time of day'])
