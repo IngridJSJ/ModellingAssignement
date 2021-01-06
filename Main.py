@@ -51,7 +51,6 @@ residualcurve3RE = residual_load3RE.sort_values()[::-1]
 
 
 # Supply curve
-print(type(residualcurve.size))
 
 # Marginalcost = []
 # for i in residualcurve.values.length:
@@ -62,63 +61,83 @@ print(type(residualcurve.size))
 #     else if i < (Capacity.BrownCoal.Capacity +  Capacity.BrownCoal.Capacity + Capacity.HardCoal.Capacity)
 #         Marginalcost[i] = Capacity.Nuclear.PricewithCO2
 
-#supply curve
-Capacity.info()
-#installedCapacity =  Capacity.Capacity.sum(axis=1)
-#print(installedCapacity)
-# for i in 10:
-#     if i < Capacity.Nuclear.Capacity:
-#         Marginalcost[i] = Capacity.Nuclear.PricewithCO2 
-#     else if i < (Capacity.BrownCoal.Capacity +  Capacity.BrownCoal.Capacity)
-#         Marginalcost[i] = Capacity.BrownCoal.PricewithCO2 
-#     else if i < (Capacity.BrownCoal.Capacity +  Capacity.BrownCoal.Capacity + Capacity.HardCoal.Capacity)
-#         Marginalcost[i] = Capacity.Nuclear.PricewithCO2
-# Capacity.Nuclear.PricewithCO2 
+#print(type(Capacity.loc["Capacity"]))
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# GRAPHS
 
-plt.plot(ElectrcityPrices)
-plt.title('Electricity prices') 
+installedCapacity =  Capacity.loc["Capacity"].sum()
+
+Residualload = residual_load.values
+Marginalcost =[]
+Marginaltechnology =[]
+
+for num, load_H in enumerate(Residualload, start=1):
+
+    if load_H < (Capacity.Nuclear.RealCapacity):
+        Marginalcost.append(Capacity.Nuclear.PricewithCO2)
+        Marginaltechnology.append("nuclear")
+    elif load_H < (Capacity.Nuclear.RealCapacity +  Capacity.BrownCoal.RealCapacity):
+        Marginalcost.append(Capacity.BrownCoal.PricewithCO2)
+        Marginaltechnology.append("BrownCoal")
+    elif load_H < (Capacity.Nuclear.RealCapacity +  Capacity.BrownCoal.RealCapacity + Capacity.HardCoal.RealCapacity):
+        Marginalcost.append(Capacity.HardCoal.PricewithCO2)
+        Marginaltechnology.append("HardCoal")
+    else:
+        Marginalcost.append(Capacity.Gas.PricewithCO2)
+        Marginaltechnology.append("Gas")
+print(type(Marginalcost[1]) )   
+sortedMC =  Marginalcost.sort()
+print(sortedMC)
+print(sortedMC[-10:-1])
+plt.plot(sortedMC)
+plt.title('Marginal Costs') 
 plt.ylabel('Eur/MWh') 
 plt.show()
 
-plt.plot(CO2emissionfactor)
-plt.title('CO2 emission factor') 
-plt.ylabel('ton CO2/MWh') 
-plt.show()
 
-plt.plot(Emissions2016)
-plt.ylabel('ton CO2') 
-plt.show()
+#-----------------------------------------------------------------------------------------------------------------------------
+# # GRAPHS
 
+# plt.plot(ElectrcityPrices)
+# plt.title('Electricity prices') 
+# plt.ylabel('Eur/MWh') 
+# plt.show()
 
-# Renewable energy generation'
-labels = [ "Biomass", "Hydropower", "Wind offshore", "Wind onshore", "Photovoltaics" , "OtherRE" ]
-pal = [ "#009933", "#66ccff",  "#000099", "#0000ff", "#ffcc00", "#9900ff" ]
-fig, (ax1, ax2) = plt.subplots(2, sharex=True)
-ax1.plot( generation.index.values, hourly_consumption  , color="pink", label="consumption")
-ax1.stackplot(generation.index.values , generation.Biomass , generation.Hydropower, generation.WindOffshore, generation.WindOnshore, generation.Photovoltaics, generation.OtherRE ,   
-labels=labels, colors =pal)
-ax1.legend( bbox_to_anchor=(1.05, 1))
-ax1.set_title('Renewable energy generation')
-ax1.set_ylabel('Mwh') 
-ax2.plot(generation.index.values, residual_load,  label="Residual Load")
-ax2.set_title('Residual Load')
-ax2.legend( bbox_to_anchor=(1.05, 1))
-ax2.set_xlabel('Month')  
-ax2.set_ylabel('Mwh') 
-plt.show()
+# plt.plot(CO2emissionfactor)
+# plt.title('CO2 emission factor') 
+# plt.ylabel('ton CO2/MWh') 
+# plt.show()
+
+# plt.plot(Emissions2016)
+# plt.ylabel('ton CO2') 
+# plt.show()
 
 
-# Residual Curve
-plt.plot(residualcurve.values)
-plt.plot(residualcurve3RE.values)
-plt.xlabel("hours")
-plt.ylabel("Capacity MWh")
-plt.title("Residual Load duration curve Germany")
-plt.legend(['2006', "3 times RE"])
-plt.show()
+# # Renewable energy generation'
+# labels = [ "Biomass", "Hydropower", "Wind offshore", "Wind onshore", "Photovoltaics" , "OtherRE" ]
+# pal = [ "#009933", "#66ccff",  "#000099", "#0000ff", "#ffcc00", "#9900ff" ]
+# fig, (ax1, ax2) = plt.subplots(2, sharex=True)
+# ax1.plot( generation.index.values, hourly_consumption  , color="pink", label="consumption")
+# ax1.stackplot(generation.index.values , generation.Biomass , generation.Hydropower, generation.WindOffshore, generation.WindOnshore, generation.Photovoltaics, generation.OtherRE ,   
+# labels=labels, colors =pal)
+# ax1.legend( bbox_to_anchor=(1.05, 1))
+# ax1.set_title('Renewable energy generation')
+# ax1.set_ylabel('Mwh') 
+# ax2.plot(generation.index.values, residual_load,  label="Residual Load")
+# ax2.set_title('Residual Load')
+# ax2.legend( bbox_to_anchor=(1.05, 1))
+# ax2.set_xlabel('Month')  
+# ax2.set_ylabel('Mwh') 
+# plt.show()
+
+
+# # Residual Curve
+# plt.plot(residualcurve.values)
+# plt.plot(residualcurve3RE.values)
+# plt.xlabel("hours")
+# plt.ylabel("Capacity MWh")
+# plt.title("Residual Load duration curve Germany")
+# plt.legend(['2006', "3 times RE"])
+# plt.show()
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 #df = pd.read_excel("national_generation_capacity.xlsx", sheet_name="output", usecols="A,LI", engine='openpyxl')
 
