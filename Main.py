@@ -34,7 +34,7 @@ plt.show()
 Capacity = pd.read_excel("smard/Installed_generation_capacity_201601010000_201612312359.xlsx", sheet_name="capacity", usecols="A:M", engine='openpyxl', index_col="Names")
 #print(Capacity.Gas.EnergyValue)
 #POWER PLANTS RENEWABLES 
-PowerPlants = pd.read_csv('ninja/renewable_power_plants_DE_2020.csv', usecols=[1,2,3,4,5,16,17], parse_dates=['commissioning_date', 'decommissioning_date'])
+PowerPlants = pd.read_csv('openpower/renewable_power_plants_DE_2020.csv', usecols=[1,2,3,4,5,16,17], parse_dates=['commissioning_date', 'decommissioning_date'])
 PowerPlants['commissioning_date']= pd.to_datetime(PowerPlants['commissioning_date'])
 indexdatescomission = PowerPlants[ (PowerPlants["commissioning_date"]< "2017-01-01")  ].index
 indexdates = PowerPlants[ (PowerPlants["commissioning_date"]< "2017-01-01") & (PowerPlants["decommissioning_date"]< "2016-01-01") ].index
