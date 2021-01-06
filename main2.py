@@ -4,30 +4,24 @@ import  matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 
+# list of 3 smaller than 5
 
-# now = datetime.now()
-# print("now =", now)
-# dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-# print("date and time =", dt_string)	
-
-
-generation= pd.read_csv("smard/Actual_generation_201601010000_201612312359.csv", sep=';')
-
-print(generation.dtypes)
-
-
-labels = ["Biomass", "Hydropower", "Wind offshore", "Wind onshore", "Photovoltaics" , "OtherRE"]
-#generation.plot.area()
-biomass = generation.Biomass
-hydropower = generation.Hydropower
-print(type(hydropower))
-plt.scatter(biomass, hydropower)
-plt.show()
-ax = generation.plot.area()
-# generation.WindOffshore
-# generation.WindOnshore
-# generation.Photovoltaics 
-# generation.OtherRE,
-#plt.stackplot(generation.Datetime , biomass ,  hydropower, labels=labels)
+a = [1,2,3,4,5,6,7,8,9,1,2,12,14,1,2,3,8,8,8,8]
+b = []
+for i in a:
+    print(a[i:(i+3)])
+    newlist = a[i:(i+3)]
+    for j in newlist:
+        if j > 5:
+            print(j)
+            break
+        else:
+            print("added",j)
+            b.append(j)
+            j+=2
+            i+=2
 
 
+
+
+print(b)    

@@ -45,53 +45,67 @@ ElectrcityPrices = ElectrcityMarginalCosts/TotalGeneration
 
 # residual load
 residual_load = hourly_consumption - AllREGeneration 
+residual_load_nonuclear = residual_load - generation.Nuclear
 residual_load3RE = hourly_consumption - AllREGeneration*3
+
+loadcurve = hourly_consumption.sort_values()[::-1]
+loadcurve_noNuclear = residual_load_nonuclear.sort_values()[::-1]
 residualcurve = residual_load.sort_values()[::-1]
 residualcurve3RE = residual_load3RE.sort_values()[::-1]
 
 
-# Supply curve
-
-# Marginalcost = []
-# for i in residualcurve.values.length:
-#     if i < Capacity.Nuclear.Capacity:
-#         Marginalcost[i] = Capacity.Nuclear.PricewithCO2 
-#     else if i < (Capacity.BrownCoal.Capacity +  Capacity.BrownCoal.Capacity)
-#         Marginalcost[i] = Capacity.BrownCoal.PricewithCO2 
-#     else if i < (Capacity.BrownCoal.Capacity +  Capacity.BrownCoal.Capacity + Capacity.HardCoal.Capacity)
-#         Marginalcost[i] = Capacity.Nuclear.PricewithCO2
-
-#print(type(Capacity.loc["Capacity"]))
-
-
-installedCapacity =  Capacity.loc["Capacity"].sum()
+# Supply curv
+#installedCapacity =  Capacity.loc["Capacity"].sum()
 
 Residualload = residual_load.values
+Residualload = [x for x in Residualload if str(x) != 'nan']
 Marginalcost =[]
 Marginaltechnology =[]
 
 for num, load_H in enumerate(Residualload, start=1):
-
-    if load_H < (Capacity.Nuclear.RealCapacity):
+    if load_H < (Capacity.Nuclear.RealCapacity) :
         Marginalcost.append(Capacity.Nuclear.PricewithCO2)
-        Marginaltechnology.append("nuclear")
     elif load_H < (Capacity.Nuclear.RealCapacity +  Capacity.BrownCoal.RealCapacity):
         Marginalcost.append(Capacity.BrownCoal.PricewithCO2)
         Marginaltechnology.append("BrownCoal")
     elif load_H < (Capacity.Nuclear.RealCapacity +  Capacity.BrownCoal.RealCapacity + Capacity.HardCoal.RealCapacity):
         Marginalcost.append(Capacity.HardCoal.PricewithCO2)
         Marginaltechnology.append("HardCoal")
-    else:
+    elif load_H < (Capacity.Nuclear.RealCapacity +  Capacity.BrownCoal.RealCapacity + Capacity.HardCoal.RealCapacity +  Capacity.Gas.RealCapacity ):
         Marginalcost.append(Capacity.Gas.PricewithCO2)
-        Marginaltechnology.append("Gas")
-print(type(Marginalcost[1]) )   
-sortedMC =  Marginalcost.sort()
-print(sortedMC)
-print(sortedMC[-10:-1])
-plt.plot(sortedMC)
+        Marginaltechnology.append("Gas")    
+    else:
+        Marginalcost.append(Capacity.OtherConventional.PricewithCO2)
+        Marginaltechnology.append("OtherConventional")
+
+MarginalcostNONUCLEAR =[]
+for num, load_H in enumerate(Residualload, start=1):
+    if load_H < ( Capacity.BrownCoal.RealCapacity):
+        MarginalcostNONUCLEAR.append(Capacity.BrownCoal.PricewithCO2)
+    elif load_H < (Capacity.BrownCoal.RealCapacity + Capacity.HardCoal.RealCapacity):
+        MarginalcostNONUCLEAR.append(Capacity.HardCoal.PricewithCO2)
+    elif load_H < ( Capacity.BrownCoal.RealCapacity + Capacity.HardCoal.RealCapacity +  Capacity.Gas.RealCapacity):
+        MarginalcostNONUCLEAR.append(Capacity.Gas.PricewithCO2)   
+    else:
+        print(load_H)
+        MarginalcostNONUCLEAR.append(Capacity.OtherConventional.PricewithCO2)
+
+plt.plot(Marginalcost)
+plt.plot(MarginalcostNONUCLEAR)
+plt.legend(["2016", "no nuclear"])
 plt.title('Marginal Costs') 
-plt.ylabel('Eur/MWh') 
 plt.show()
+
+Marginalcost.sort()
+MarginalcostNONUCLEAR.sort()
+plt.plot(Marginalcost)
+plt.plot(MarginalcostNONUCLEAR)
+plt.legend(["2016", "no nuclear"])
+plt.title('Marginal Costs Sorted') 
+plt.show()
+
+
+
 
 
 #-----------------------------------------------------------------------------------------------------------------------------
@@ -131,12 +145,15 @@ plt.show()
 
 
 # # Residual Curve
+
+# plt.plot(loadcurve.values)
+# plt.plot(loadcurve_noNuclear.values)
 # plt.plot(residualcurve.values)
 # plt.plot(residualcurve3RE.values)
 # plt.xlabel("hours")
 # plt.ylabel("Capacity MWh")
 # plt.title("Residual Load duration curve Germany")
-# plt.legend(['2006', "3 times RE"])
+# plt.legend(["2016 Load", '2016 load no nuclear', '2016 residual load', "3 times RE generation"])
 # plt.show()
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 #df = pd.read_excel("national_generation_capacity.xlsx", sheet_name="output", usecols="A,LI", engine='openpyxl')
